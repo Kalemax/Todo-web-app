@@ -181,4 +181,10 @@
     right: 0;
     border-right-color: var(--border);
   }
+
+  /*Removes bullet points from the list of tasks*/
+  ul{
+    list-style-type: none;
+    padding: 0;
+  }
 }
