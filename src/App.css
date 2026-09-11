@@ -161,6 +161,19 @@
   }
 }
 
+/*Removes bullet points from the list of tasks*/
+ul{
+  list-style-type: none;
+  padding: 0;
+}
+
+li{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
 .ticks {
   position: relative;
   width: 100%;
@@ -180,11 +193,5 @@
   &::after {
     right: 0;
     border-right-color: var(--border);
-  }
-
-  /*Removes bullet points from the list of tasks*/
-  ul{
-    list-style-type: none;
-    padding: 0;
   }
 }

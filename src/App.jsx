@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
+import { Routes, Route, Link } from 'react-router-dom'
+import Achievements from './Achievements.jsx'
 
 function App() {
   //Provides a state variable to hold the tasks value and has a function to edit tasks
@@ -46,9 +48,14 @@ function App() {
   //Only displays tasks that are due on the selected date
   const selectedDateTasks = tasks.filter(task => new Date(task.dueDate).toDateString() === selectedDate.toDateString())
 
+  //Sorts tasks so incomplete tasks are displayed first
+  const sortedTasks = [...selectedDateTasks].sort((a, b) => a.completed - b.completed)
   //Displays the app
   return(
+<Routes>
+  <Route path="/" element={
     <div>
+      <Link to="/Achievements">Achievements</Link>
       <h1>Task Grind</h1>
       <p>Tasks remaining: {tasks.length - amountCompleted}</p>
       <p>Tasks completed: {amountCompleted}</p>
@@ -66,7 +73,7 @@ function App() {
 
       {/*Creates each task with their own buttons*/}
       <ul>
-        {selectedDateTasks.map((task) => (
+        {sortedTasks.map((task) => (
           <li key={task.id}>
           <input
             type="checkbox"
@@ -80,15 +87,17 @@ function App() {
             🗑️
           </button>
           </li>
-  ))}
-
-</ul>
+        ))}
+      </ul>
       {/*Renders a calendar to pick the date for tasks*/}
       <Calendar
         onChange={setSelectedDate}
         value={selectedDate}
       />
     </div>
+  } />
+  <Route path="/Achievements" element={<Achievements />} />
+</Routes>
   )
 
 }
