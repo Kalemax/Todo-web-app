@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, NavLink } from 'react-router-dom'
 import Achievements from './Achievements.jsx'
 
 function App() {
@@ -22,9 +22,6 @@ function App() {
 
   //Keeps track of selected date for tasks
   const[selectedDate, setSelectedDate] = useState(new Date())
-
-  //Keeps track of the number of completed tasks
-  let amountCompleted = tasks.filter(task => task.completed).length
 
   //Function to add tasks when the button is pressed, and not do anything if the input is empty
   function handleAddTask() {
@@ -50,56 +47,78 @@ function App() {
 
   //Sorts tasks so incomplete tasks are displayed first
   const sortedTasks = [...selectedDateTasks].sort((a, b) => a.completed - b.completed)
+
+  //Lists only today's tasks and counts how many of them are completed
+  const todayTasks = tasks.filter(task => new Date(task.dueDate).toDateString() === new Date().toDateString())
+  let completedToday = todayTasks.filter(task => task.completed).length
   //Displays the app
   return(
-<Routes>
-  <Route path="/" element={
-    <div>
-      <Link to="/Achievements">Achievements</Link>
-      <h1>Task Grind</h1>
-      <p>Tasks remaining: {tasks.length - amountCompleted}</p>
-      <p>Tasks completed: {amountCompleted}</p>
+  
+  <div>
+    <nav>
+      <NavLink
+        to="/"
+        end
+        className={({ isActive }) => isActive ? "tab active" : "tab"}
+      >
+        Tasks
+      </NavLink>
+      <NavLink
+        to="/achievements"
+        className={({ isActive }) => isActive ? "tab active" : "tab"}
+      >
+        Achievements
+      </NavLink>
+    </nav>
+    <Routes>
+      <Route path="/" element={
+        <div className="task-page">
+          <h1>Task Grind</h1>
+          <p>Tasks remaining today: {todayTasks.length - completedToday}</p>
+          <p>Tasks completed today: {completedToday}</p>
 
-      {/*Reads new task and calls task addition function when button is pressed*/}
-      <input
-        type = "text"
-        value = {newTask}
-        onChange = {(e) => setNewTask(e.target.value)}
-        onKeyDown = {(e) => {
-          if (e.key === 'Enter') handleAddTask()
-        }}
-      />
-      <button onClick={handleAddTask}>Add Task</button>
-
-      {/*Creates each task with their own buttons*/}
-      <ul>
-        {sortedTasks.map((task) => (
-          <li key={task.id}>
+          {/*Reads new task and calls task addition function when button is pressed*/}
           <input
-            type="checkbox"
-            checked={task.completed}
-            onChange={() => handleCompleteTask(task.id)}
+            type = "text"
+            value = {newTask}
+            onChange = {(e) => setNewTask(e.target.value)}
+            onKeyDown = {(e) => {
+              if (e.key === 'Enter') handleAddTask()
+            }}
           />
-          <span style={{ textDecoration: task.completed ? "line-through" : "none" }}>
-            {task.text}
-          </span>
-          <button onClick={() => handleRemoveTask(task.id)}>
-            🗑️
-          </button>
-          </li>
-        ))}
-      </ul>
-      {/*Renders a calendar to pick the date for tasks*/}
-      <Calendar
-        onChange={setSelectedDate}
-        value={selectedDate}
-      />
-    </div>
-  } />
-  <Route path="/Achievements" element={<Achievements />} />
-</Routes>
-  )
+          <button onClick={handleAddTask}>Add Task</button>
 
+          {/*Creates each task with their own buttons*/}
+          <div className="task-layout">
+            <ul>
+              {sortedTasks.map((task) => (
+                <li key={task.id}>
+              <input
+                type="checkbox"
+                checked={task.completed}
+                onChange={() => handleCompleteTask(task.id)}
+              />
+              <span style={{ textDecoration: task.completed ? "line-through" : "none" }}>
+                {task.text}
+              </span>
+              <button onClick={() => handleRemoveTask(task.id)}>
+                🗑️
+              </button>
+                </li>
+              ))}
+            </ul>
+            {/*Renders a calendar to pick the date for tasks*/}
+            <Calendar
+              onChange={setSelectedDate}
+              value={selectedDate}
+            />
+            </div>
+          </div>
+      }/>
+        <Route path="/achievements" element={<Achievements tasks={tasks} />} />
+     </Routes>
+    </div>
+    )
 }
 
 export default App
