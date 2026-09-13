@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 230" width="200" height="230">
+  <defs>
+    <radialGradient id="face-locked-ten_tasks" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#9a9ea2"/>
+      <stop offset="100%" stop-color="#5d6165"/>
+    </radialGradient>
+    <linearGradient id="ring-locked-ten_tasks" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9a9ea2"/>
+      <stop offset="100%" stop-color="#6b6f73"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ribbon tails -->
+  <path d="M 78 150 L 60 214 L 84 202 L 96 218 L 104 150 Z" fill="#5d6165"/>
+  <path d="M 122 150 L 140 214 L 116 202 L 104 218 L 96 150 Z" fill="#42454a"/>
+
+  <!-- outer ring -->
+  <circle cx="100" cy="98" r="62" fill="url(#ring-locked-ten_tasks)"/>
+  <!-- inner face -->
+  <circle cx="100" cy="98" r="50" fill="url(#face-locked-ten_tasks)"/>
+  <circle cx="100" cy="98" r="50" fill="none" stroke="#6b6f73" stroke-width="2" opacity="0.5"/>
+
+  <!-- little corner sparkle for unlocked tiers -->
+  
+
+  <!-- icon -->
+  
+        <path d="M70 100 L92 122 L134 78" fill="none" stroke="#33363a" stroke-width="12"
+              stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+    
+  
+        <g transform="translate(100,100)">
+          <rect x="-14" y="-4" width="28" height="22" rx="4" fill="#4d5257" opacity="0.85"/>
+          <path d="M -8 -4 L -8 -14 A 8 8 0 0 1 8 -14 L 8 -4" fill="none" stroke="#4d5257" stroke-width="5" opacity="0.85"/>
+        </g>
+        
+</svg>

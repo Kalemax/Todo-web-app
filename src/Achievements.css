@@ -1,0 +1,29 @@
+.achievements-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2rem;
+	list-style: none;
+	padding: 0;
+}
+
+.achievements-list li {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.achievement-name {
+	margin: 0;
+	padding: 0.65rem 1rem;
+	border-radius: 0.5rem;
+	background: #1976d2;
+	color: #ffffff;
+	font-weight: 700;
+	text-align: center;
+	box-shadow: 0 3px 8px rgb(25 118 210 / 25%);
+}
+
+.achievement-badge {
+	display: block;
+	max-width: 100%;
+}

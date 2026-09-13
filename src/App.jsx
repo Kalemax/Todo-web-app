@@ -31,10 +31,12 @@ function App() {
     setNewTask('')
   }
 
-  //Function to remove tasks when the button is pressed
+  //Function to remove tasks when the button is pressed and the user confirms via a pop-up window
   function handleRemoveTask(id) {
-    const updatedTasks = tasks.filter(task => task.id !== id)
-    setTasks(updatedTasks)
+    if (window.confirm("Are you sure you want to delete this task?")) { //Make window better later
+      const updatedTasks = tasks.filter(task => task.id !== id)
+      setTasks(updatedTasks)
+    }
   }
 
   //Function to mark tasks as completed when the button is pressed, and unmark them if they are already completed

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 230" width="200" height="230">
+  <defs>
+    <radialGradient id="face-silver-ten_tasks" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#eef1f4"/>
+      <stop offset="100%" stop-color="#b6bec6"/>
+    </radialGradient>
+    <linearGradient id="ring-silver-ten_tasks" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d7dce1"/>
+      <stop offset="100%" stop-color="#8f97a1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ribbon tails -->
+  <path d="M 78 150 L 60 214 L 84 202 L 96 218 L 104 150 Z" fill="#7c848d"/>
+  <path d="M 122 150 L 140 214 L 116 202 L 104 218 L 96 150 Z" fill="#5e656c"/>
+
+  <!-- outer ring -->
+  <circle cx="100" cy="98" r="62" fill="url(#ring-silver-ten_tasks)"/>
+  <!-- inner face -->
+  <circle cx="100" cy="98" r="50" fill="url(#face-silver-ten_tasks)"/>
+  <circle cx="100" cy="98" r="50" fill="none" stroke="#8f97a1" stroke-width="2" opacity="0.5"/>
+
+  <!-- little corner sparkle for unlocked tiers -->
+  <path d="M150 46 l4 10 l10 4 l-10 4 l-4 10 l-4-10 l-10-4 l10-4 Z" fill="#ffffff"/>
+
+  <!-- icon -->
+  
+        <path d="M70 100 L92 122 L134 78" fill="none" stroke="#565d64" stroke-width="12"
+              stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+    
+  
+</svg>

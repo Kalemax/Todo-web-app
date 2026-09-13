@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 230" width="200" height="230">
+  <defs>
+    <radialGradient id="face-bronze-streak" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#e0a86a"/>
+      <stop offset="100%" stop-color="#a86a34"/>
+    </radialGradient>
+    <linearGradient id="ring-bronze-streak" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c98a4b"/>
+      <stop offset="100%" stop-color="#8a5a2b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ribbon tails -->
+  <path d="M 78 150 L 60 214 L 84 202 L 96 218 L 104 150 Z" fill="#7a4a22"/>
+  <path d="M 122 150 L 140 214 L 116 202 L 104 218 L 96 150 Z" fill="#5c3717"/>
+
+  <!-- outer ring -->
+  <circle cx="100" cy="98" r="62" fill="url(#ring-bronze-streak)"/>
+  <!-- inner face -->
+  <circle cx="100" cy="98" r="50" fill="url(#face-bronze-streak)"/>
+  <circle cx="100" cy="98" r="50" fill="none" stroke="#8a5a2b" stroke-width="2" opacity="0.5"/>
+
+  <!-- little corner sparkle for unlocked tiers -->
+  <path d="M150 46 l4 10 l10 4 l-10 4 l-4 10 l-4-10 l-10-4 l10-4 Z" fill="#f3c98a"/>
+
+  <!-- icon -->
+  
+        <path d="M100 56
+                 C 88 78, 70 86, 74 108
+                 C 76 122, 88 132, 100 132
+                 C 112 132, 124 122, 126 108
+                 C 128 96, 118 92, 118 92
+                 C 118 104, 108 108, 104 100
+                 C 100 92, 108 84, 100 56 Z"
+              fill="#4a2c10" opacity="1"/>
+    
+  
+</svg>
