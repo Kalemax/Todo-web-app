@@ -43,9 +43,14 @@ function App() {
     setTasks(tasks.map(task => task.id === id ? { ...task, completed: !task.completed } : task))
   }
 
+  //Moves the task to the next day
+  function moveToTomorrow(id) {
+    setTasks(tasks.map(task => task.id === id ? { ...task, dueDate: new Date(new Date(task.dueDate).setDate(new Date(task.dueDate).getDate() + 1)) } : task))
+  }
   //Checks for a streak of tasks being completed in a day
   function calculateStreak(tasks) {
   let streak = 0
+  let highest = 0
   let checkDate = new Date()  // start from today
 
   for (let i = 0; i < 365; i++) { 
@@ -55,19 +60,23 @@ function App() {
     const hasTasks = tasksForDay.length > 0
     const allCompleted = hasTasks && tasksForDay.every(task => task.completed)
 
-    if (!allCompleted) break  // streak broken, stop counting
-
-    streak++
+    if (!allCompleted){
+      streak = 0  // Streak broken; resets to 0
+    }else{
+      streak++ 
+    }
+    
+    if(streak > highest) {
+      highest = streak
+    }
     checkDate.setDate(checkDate.getDate() - 1)  // move back one day
   }
-  
-
-  return streak
+  return highest
 }
-//Holds current streak and longest streak values
-const currentStreak = calculateStreak(tasks)
-const longestStreak = currentStreak > parseInt(localStorage.getItem('longestStreak') || '0') ? currentStreak : parseInt(localStorage.getItem('longestStreak') || '0')
+//Holds  longest streak values and saves it to local storage
+const longestStreak = calculateStreak(tasks)
 localStorage.setItem('longestStreak', longestStreak.toString())
+
   //Only displays tasks that are due on the selected date
   const selectedDateTasks = tasks.filter(task => new Date(task.dueDate).toDateString() === selectedDate.toDateString())
 
@@ -129,6 +138,9 @@ localStorage.setItem('longestStreak', longestStreak.toString())
               </span>
               <button onClick={() => handleRemoveTask(task.id)}>
                 🗑️
+              </button>
+              <button onClick={() => moveToTomorrow(task.id)}>
+                ⏭️
               </button>
                 </li>
               ))}

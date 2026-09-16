@@ -82,12 +82,12 @@ function Achievements({ tasks, longestStreak }) {
               <li key={achievementOneName}>
                 <p className="achievement-name">{achievementOneName}</p>
                 <img className="achievement-badge" src={imageSrcOne} alt={achievementOneName} />
-                <p className="achievement-progress">{totalCompleted}/{achievementOneGoal}</p>
+                <p className="achievement-progress">Total tasks: {totalCompleted}/{achievementOneGoal}</p>
               </li>
               <li key={achievementTwoName}>
                 <p className="achievement-name">{achievementTwoName}</p>
                 <img className="achievement-badge" src={imageSrcTwo} alt={achievementTwoName} />
-                <p className="achievement-progress">{longestStreak}/{achievementTwoGoal}</p>
+                <p className="achievement-progress">Longest streak: {longestStreak}/{achievementTwoGoal}</p>
               </li>
       </ul>
     </div>
