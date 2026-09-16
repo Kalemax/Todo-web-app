@@ -33,17 +33,41 @@ function App() {
 
   //Function to remove tasks when the button is pressed and the user confirms via a pop-up window
   function handleRemoveTask(id) {
-    if (window.confirm("Are you sure you want to delete this task?")) { //Make window better later
-      const updatedTasks = tasks.filter(task => task.id !== id)
-      setTasks(updatedTasks)
-    }
+    const updatedTasks = tasks.filter(task => task.id !== id)
+    setTasks(updatedTasks)
   }
 
+  
   //Function to mark tasks as completed when the button is pressed, and unmark them if they are already completed
   function handleCompleteTask(id) {
     setTasks(tasks.map(task => task.id === id ? { ...task, completed: !task.completed } : task))
   }
 
+  //Checks for a streak of tasks being completed in a day
+  function calculateStreak(tasks) {
+  let streak = 0
+  let checkDate = new Date()  // start from today
+
+  for (let i = 0; i < 365; i++) { 
+    const dayString = checkDate.toDateString()
+    const tasksForDay = tasks.filter(task => new Date(task.dueDate).toDateString() === dayString)
+
+    const hasTasks = tasksForDay.length > 0
+    const allCompleted = hasTasks && tasksForDay.every(task => task.completed)
+
+    if (!allCompleted) break  // streak broken, stop counting
+
+    streak++
+    checkDate.setDate(checkDate.getDate() - 1)  // move back one day
+  }
+  
+
+  return streak
+}
+//Holds current streak and longest streak values
+const currentStreak = calculateStreak(tasks)
+const longestStreak = currentStreak > parseInt(localStorage.getItem('longestStreak') || '0') ? currentStreak : parseInt(localStorage.getItem('longestStreak') || '0')
+localStorage.setItem('longestStreak', longestStreak.toString())
   //Only displays tasks that are due on the selected date
   const selectedDateTasks = tasks.filter(task => new Date(task.dueDate).toDateString() === selectedDate.toDateString())
 
@@ -117,7 +141,11 @@ function App() {
             </div>
           </div>
       }/>
-        <Route path="/achievements" element={<Achievements tasks={tasks} />} />
+        <Route path="/achievements" element={
+          <Achievements tasks={tasks}
+            longestStreak={longestStreak}
+         />} 
+         />
      </Routes>
     </div>
     )
