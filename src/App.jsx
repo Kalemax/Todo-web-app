@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Calendar from 'react-calendar'
-import './App.css'
 import 'react-calendar/dist/Calendar.css'
+import './App.css'
 import { Routes, Route, NavLink } from 'react-router-dom'
 import Achievements from './Achievements.jsx'
 
@@ -17,8 +17,12 @@ function App() {
   localStorage.setItem('tasks', JSON.stringify(tasks))
 }, [tasks])
 
-  //Allows for the creation of a new task and the ability to edit it
+  //Allows for the creation of a new task
   const[newTask, setNewTask] = useState('')
+
+  //Allows for editing a task
+  const[editedTask, setEditedTask] = useState('')
+  const [editingTaskId, setEditingTaskId] = useState(null)
 
   //Keeps track of selected date for tasks
   const[selectedDate, setSelectedDate] = useState(new Date())
@@ -46,6 +50,11 @@ function App() {
   //Moves the task to the next day
   function moveToTomorrow(id) {
     setTasks(tasks.map(task => task.id === id ? { ...task, dueDate: new Date(new Date(task.dueDate).setDate(new Date(task.dueDate).getDate() + 1)) } : task))
+  }
+
+  //Allows the user to edit the text of a task that has already been created
+  function handleEditTask(id) {
+    setTasks(tasks.map(task => task.id === id ? {...task, text: editedTask} : task))
   }
   //Checks for a streak of tasks being completed in a day
   function calculateStreak(tasks) {
@@ -113,10 +122,11 @@ localStorage.setItem('longestStreak', longestStreak.toString())
           <p>Tasks completed today: {completedToday}</p>
 
           {/*Reads new task and calls task addition function when button is pressed*/}
+          {/*The value and onChange combo essentially tells React to always have the textbox value equal to newTask, and to update the value of newTask to whatever is typed everytime the typed input changes*/}
           <input
             type = "text"
             value = {newTask}
-            onChange = {(e) => setNewTask(e.target.value)}
+            onChange = {(e) => setNewTask(e.target.value)} 
             onKeyDown = {(e) => {
               if (e.key === 'Enter') handleAddTask()
             }}
@@ -128,20 +138,43 @@ localStorage.setItem('longestStreak', longestStreak.toString())
             <ul>
               {sortedTasks.map((task) => (
                 <li key={task.id}>
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={() => handleCompleteTask(task.id)}
-              />
-              <span style={{ textDecoration: task.completed ? "line-through" : "none" }}>
-                {task.text}
-              </span>
-              <button onClick={() => handleRemoveTask(task.id)}>
-                🗑️
-              </button>
-              <button onClick={() => moveToTomorrow(task.id)}>
-                ⏭️
-              </button>
+                  <input
+                    type="checkbox"
+                    checked={task.completed}
+                    onChange={() => handleCompleteTask(task.id)}
+                  />
+
+                  {/*Allows for a textbox to appear when editing a task*/}
+                  {editingTaskId === task.id ? (
+                    <input
+                      type="text"
+                      value={editedTask}
+                      onChange={(e) => setEditedTask(e.target.value)}
+                      onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleEditTask(task.id)
+                        setEditingTaskId(null)
+                      }
+                    }}
+                    />
+                  ) : (
+                  <span style={{ textDecoration: task.completed ? "line-through" : "none" }}>
+                    {task.text}
+                  </span>
+                  )}
+
+                  <button onClick={() => {
+                    setEditingTaskId(task.id)
+                    setEditedTask(task.text)
+                  }}>
+                  ✏️
+                  </button>
+                  <button onClick={() => handleRemoveTask(task.id)}>
+                    🗑️
+                  </button>
+                  <button onClick={() => moveToTomorrow(task.id)}>
+                    ⏭️
+                  </button>
                 </li>
               ))}
             </ul>

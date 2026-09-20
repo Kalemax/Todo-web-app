@@ -1,5 +1,6 @@
-/*Removes bullet points from the list of tasks*/
-ul{
+
+/*Styles the list of achievements*/
+.task-layout ul{
   list-style-type: none;
   padding: 0;
   margin: 0;
@@ -8,19 +9,19 @@ ul{
   gap: 12px;
 }
 
-li{
+.task-layout li{
   display: flex;
   align-items: center;
-  gap: 12px;
-  background-color: #2d4179;
-  border-radius: 14px;
-  padding: 14px 18px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-  transition: background-color 0.2s;
+  gap: 6px;
 }
 
-li:hover {
-  background-color: #22336a;
+.task-layout {
+  display: flex;
+  /*grid-template-columns: minmax(0, 1fr) 350px;*/ /*Only use this if in grid mode*/
+  align-items: start;
+  gap: 20px;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 li input[type="checkbox"] {
@@ -32,19 +33,19 @@ li input[type="checkbox"] {
   flex-shrink: 0;
 }
 
-li span {
-  flex: 1;
+.task-layout li span {
   font-size: 16px;
 }
 
-li button {
-  padding: 6px 10px;
+.task-layout li button {
+  padding: 5px 7px;
   font-size: 14px;
   background-color: transparent;
   box-shadow: none;
+  margin: 0;
 }
 
-li button:hover {
+.task-layout li button:hover {
   background-color: #2d3f7a;
 }
 
@@ -76,21 +77,7 @@ nav {
 
 .react-calendar {
   background-color: #07143c !important;
-  border-radius: 8px;
-  border: none;
-}
-
-.task-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 350px;
-  align-items: start;
-  gap: 20px;
-  max-width: 700px;
-  margin: 0 auto;
-}
-
-.task-layout .react-calendar {
-  width: 350px;
+  border: none !important;
 }
 
 /*Styles the calendar tiles*/
