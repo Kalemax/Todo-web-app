@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import './App.css'
 import Calendar from 'react-calendar'
+import './App.css'
 import 'react-calendar/dist/Calendar.css'
 import { Routes, Route, NavLink } from 'react-router-dom'
 import Achievements from './Achievements.jsx'
@@ -89,7 +89,7 @@ localStorage.setItem('longestStreak', longestStreak.toString())
   //Displays the app
   return(
   
-  <div>
+  <div className="app-wrapper">
     <nav>
       <NavLink
         to="/"
@@ -145,22 +145,25 @@ localStorage.setItem('longestStreak', longestStreak.toString())
                 </li>
               ))}
             </ul>
+          </div>
+
             {/*Renders a calendar to pick the date for tasks*/}
+            <div className="calendar-container">
             <Calendar
               onChange={setSelectedDate}
               value={selectedDate}
             />
             </div>
-          </div>
+        </div>
       }/>
-        <Route path="/achievements" element={
-          <Achievements tasks={tasks}
-            longestStreak={longestStreak}
-         />} 
-         />
-     </Routes>
-    </div>
-    )
+      <Route path="/achievements" element={
+        <Achievements tasks={tasks}
+          longestStreak={longestStreak}
+        />} 
+        />
+      </Routes>
+  </div>
+  )
 }
 
 export default App
