@@ -86,6 +86,36 @@ function App() {
 const longestStreak = calculateStreak(tasks)
 localStorage.setItem('longestStreak', longestStreak.toString())
 
+//Checks for the most tasks completed in a day and saves it to local storage
+function calculateTasksInADay(tasks) {
+  const tasksByDate = {}
+  for (let i = 0; i < 365; i++) {
+    const checkDate = new Date()
+    checkDate.setDate(checkDate.getDate() - i)
+    const dayString = checkDate.toDateString()
+    tasksByDate[dayString] = 0
+  }
+
+  tasks.forEach(task => {
+    if (task.completed) {
+      const dayString = new Date(task.dueDate).toDateString()
+      if (dayString in tasksByDate) {
+        tasksByDate[dayString]++
+      }
+    }
+  })
+  let maxTasksInADay = 0
+  for (const day in tasksByDate) {
+    if (tasksByDate[day] > maxTasksInADay) {
+      maxTasksInADay = tasksByDate[day]
+    }
+  }
+
+  return maxTasksInADay
+}
+  const tasksInADay = calculateTasksInADay(tasks)
+  localStorage.setItem('tasksInADay', tasksInADay.toString())
+
   //Only displays tasks that are due on the selected date
   const selectedDateTasks = tasks.filter(task => new Date(task.dueDate).toDateString() === selectedDate.toDateString())
 
@@ -192,6 +222,7 @@ localStorage.setItem('longestStreak', longestStreak.toString())
       <Route path="/achievements" element={
         <Achievements tasks={tasks}
           longestStreak={longestStreak}
+          tasksInADay={tasksInADay}
         />} 
         />
       </Routes>

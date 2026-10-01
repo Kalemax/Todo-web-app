@@ -8,11 +8,15 @@ import streakLocked from './assets/Badges/png/streak_locked.png'
 import streakBronze from './assets/Badges/png/streak_bronze.png'
 import streakSilver from './assets/Badges/png/streak_silver.png'
 import streakGold from './assets/Badges/png/streak_gold.png'
+import oneDayLocked from './assets/Badges/png/five_a_day_locked.png'
+import oneDayBronze from './assets/Badges/png/five_a_day_bronze.png'
+import oneDaySilver from './assets/Badges/png/five_a_day_silver.png'
+import oneDayGold from './assets/Badges/png/five_a_day_gold.png'
 
 //Imports the CSS for the achievements page
 import './Achievements.css'
 
-function Achievements({ tasks, longestStreak }) {
+function Achievements({ tasks, longestStreak, tasksInADay }) {
   //Keeps track of the number of completed tasks
   const totalCompleted = tasks.filter(task => task.completed).length
 
@@ -35,7 +39,15 @@ function Achievements({ tasks, longestStreak }) {
         gold: streakGold,
       }
     }
-
+  const achievementThree =
+    {
+      images: {
+        locked: oneDayLocked,
+        bronze: oneDayBronze,
+        silver: oneDaySilver,
+        gold: oneDayGold,
+      }
+    }
     //Sets up achievement one
     let achievementOneState = "locked"
     let achievementOneName = "Complete 25 tasks" 
@@ -53,7 +65,7 @@ function Achievements({ tasks, longestStreak }) {
     }
     const imageSrcOne = achievementOne.images[achievementOneState]
 
-    /*Sets up achievement two*/
+    //Sets up achievement two
     let achievementTwoState = "locked"
     let achievementTwoName = "Complete all tasks for 3 days in a row"
     let achievementTwoGoal = 3
@@ -71,6 +83,22 @@ function Achievements({ tasks, longestStreak }) {
     }
           const imageSrcTwo = achievementTwo.images[achievementTwoState]
 
+    //Sets up achievement three
+    let achievementThreeState = "locked"
+    let achievementThreeName = "Complete 5 tasks in one day"
+    let achievementThreeGoal = 5
+    if(tasksInADay >= 5 && tasksInADay < 10) {
+      achievementThreeState = "bronze"
+      achievementThreeGoal = 10
+    }else if(tasksInADay >= 10 && tasksInADay < 15) {
+      achievementThreeState = "silver"
+      achievementThreeName = "Complete 10 tasks in one day"
+      achievementThreeGoal = 15
+    }else if(tasksInADay >= 15) {
+      achievementThreeState = "gold"
+      achievementThreeName = "Complete 15 tasks in one day"
+    }
+    const imageSrcThree = achievementThree.images[achievementThreeState]
 
   return (
     <div>
@@ -88,6 +116,11 @@ function Achievements({ tasks, longestStreak }) {
                 <p className="achievement-name">{achievementTwoName}</p>
                 <img className="achievement-badge" src={imageSrcTwo} alt={achievementTwoName} />
                 <p className="achievement-progress">Longest streak: {longestStreak}/{achievementTwoGoal}</p>
+              </li>
+              <li key={achievementThreeName}>
+                <p className="achievement-name">{achievementThreeName}</p>
+                <img className="achievement-badge" src={imageSrcThree} alt={achievementThreeName} />
+                <p className="achievement-progress">Most tasks completed in one day: {tasksInADay}/{achievementThreeGoal}</p>
               </li>
       </ul>
     </div>
