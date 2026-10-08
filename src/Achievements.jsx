@@ -16,7 +16,7 @@ import oneDayGold from './assets/Badges/png/five_a_day_gold.png'
 //Imports the CSS for the achievements page
 import './Achievements.css'
 
-function Achievements({ tasks, longestStreak, tasksInADay }) {
+function Achievements({ tasks, longestStreak, currentStreak,tasksInADay }) {
   //Keeps track of the number of completed tasks
   const totalCompleted = tasks.filter(task => task.completed).length
 
@@ -103,7 +103,6 @@ function Achievements({ tasks, longestStreak, tasksInADay }) {
   return (
     <div>
       <h1>Achievements</h1>
-      <p>Lifetime tasks completed: {totalCompleted}</p>
 
       {/*Displays achievements and gives them a visual based on how far in the achievement progression they are*/}
       <ul className="achievements-list">
@@ -116,6 +115,7 @@ function Achievements({ tasks, longestStreak, tasksInADay }) {
                 <p className="achievement-name">{achievementTwoName}</p>
                 <img className="achievement-badge" src={imageSrcTwo} alt={achievementTwoName} />
                 <p className="achievement-progress">Longest streak: {longestStreak}/{achievementTwoGoal}</p>
+                <p className="achievement-progress">Current streak: {currentStreak}</p>
               </li>
               <li key={achievementThreeName}>
                 <p className="achievement-name">{achievementThreeName}</p>

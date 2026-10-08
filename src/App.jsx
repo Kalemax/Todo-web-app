@@ -86,6 +86,34 @@ function App() {
 const longestStreak = calculateStreak(tasks)
 localStorage.setItem('longestStreak', longestStreak.toString())
 
+//Calculates current streak
+//Counts consecutive fully-completed days ending today (or yesterday, if today isn't finished yet)
+function calculateCurrentStreak(tasks) {
+  let streak = 0
+  const checkDate = new Date()
+
+  //True if the day has at least one task and every task is completed
+  function isDayComplete(date) {
+    const dayString = date.toDateString()
+    const tasksForDay = tasks.filter(task => new Date(task.dueDate).toDateString() === dayString)
+    return tasksForDay.length > 0 && tasksForDay.every(task => task.completed)
+  }
+
+  //If today has all tasks completed, start from today, but if not, start from yesterday because today shouldn't break the streak
+  if (!isDayComplete(checkDate)) {
+    checkDate.setDate(checkDate.getDate() - 1)
+  }
+
+  for (let i = 0; i < 365; i++) {
+    if (!isDayComplete(checkDate)) break
+    streak++
+    checkDate.setDate(checkDate.getDate() - 1)
+  }
+
+  return streak
+}
+const currentStreak = calculateCurrentStreak(tasks)
+
 //Checks for the most tasks completed in a day and saves it to local storage
 function calculateTasksInADay(tasks) {
   const tasksByDate = {}
@@ -222,6 +250,7 @@ function calculateTasksInADay(tasks) {
       <Route path="/achievements" element={
         <Achievements tasks={tasks}
           longestStreak={longestStreak}
+          currentStreak={currentStreak}
           tasksInADay={tasksInADay}
         />} 
         />
