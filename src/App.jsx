@@ -5,6 +5,10 @@ import './App.css'
 import { Routes, Route, NavLink } from 'react-router-dom'
 import Achievements from './Achievements.jsx'
 
+//These imports allow for Supabase functions (like sign up and log in)
+import { supabase } from './supabaseClient'
+import Login from './login.jsx'
+
 function App() {
   //Provides a state variable to hold the tasks value and has a function to edit tasks
   const [tasks, setTasks] = useState(() => { 
@@ -153,7 +157,27 @@ function calculateTasksInADay(tasks) {
   //Lists only today's tasks and counts how many of them are completed
   const todayTasks = tasks.filter(task => new Date(task.dueDate).toDateString() === new Date().toDateString())
   let completedToday = todayTasks.filter(task => task.completed).length
-  //Displays the app
+
+  //Handles the login state of the user, and displays the login page if they are not logged in
+  const [user, setUser] = useState(null)
+  const [authLoading, setAuthLoading] = useState(true)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setUser(data.session?.user ?? null)
+      setAuthLoading(false)
+    })
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+    return () => listener.subscription.unsubscribe()
+  }, [])
+
+  //If the auth state is still loading, display a loading message. If the user is not logged in, display the login page. Otherwise, display the app.
+  if (authLoading) return <p>Loading...</p>
+  if (!user) return <Login />
+
+  //Displays the app if logged in
   return(
   
   <div className="app-wrapper">
@@ -172,6 +196,7 @@ function calculateTasksInADay(tasks) {
         Achievements
       </NavLink>
     </nav>
+    <button onClick={() => supabase.auth.signOut()}>Log Out</button>
     <Routes>
       <Route path="/" element={
         <div className="task-page">
