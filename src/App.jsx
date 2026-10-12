@@ -9,17 +9,14 @@ import Achievements from './Achievements.jsx'
 import { supabase } from './supabaseClient'
 import Login from './login.jsx'
 
+//Converts a database row into the task shape the rest of the app uses (this is how tasks are connected to a specific user)
+function toTask(row) {
+  return { id: row.id, text: row.text, completed: row.completed, dueDate: row.due_date }
+}
+
 function App() {
   //Provides a state variable to hold the tasks value and has a function to edit tasks
-  const [tasks, setTasks] = useState(() => { 
-    const savedTasks = localStorage.getItem('tasks')
-    return savedTasks ? JSON.parse(savedTasks) : []
-  })
-
-  //Saves the tasks to local storage whenever the tasks state variable is updated
-  useEffect(() => {
-  localStorage.setItem('tasks', JSON.stringify(tasks))
-}, [tasks])
+  const [tasks, setTasks] = useState([])
 
   //Allows for the creation of a new task
   const[newTask, setNewTask] = useState('')
@@ -32,33 +29,65 @@ function App() {
   const[selectedDate, setSelectedDate] = useState(new Date())
 
   //Function to add tasks when the button is pressed, and not do anything if the input is empty
-  function handleAddTask() {
+  async function handleAddTask() {
     if (newTask.trim() === '') return
-    const newTaskObject = { id: Date.now(), text: newTask, completed: false, dueDate: selectedDate}
-    setTasks([...tasks, newTaskObject])
+    const { data, error } = await supabase
+      .from('tasks')
+      .insert({ text: newTask, completed: false, due_date: selectedDate.toISOString() })
+      .select()
+      .single()
+    if (error) {
+      console.error(error.message)
+      return
+    }
+    setTasks(prev => [...prev, toTask(data)])
     setNewTask('')
   }
 
   //Function to remove tasks when the button is pressed and the user confirms via a pop-up window
-  function handleRemoveTask(id) {
-    const updatedTasks = tasks.filter(task => task.id !== id)
-    setTasks(updatedTasks)
+  async function handleRemoveTask(id) {
+    const { error } = await supabase.from('tasks').delete().eq('id', id)
+    if (error) {
+      console.error(error.message)
+      return
+    }
+    setTasks(prev => prev.filter(task => task.id !== id))
   }
 
-  
+
   //Function to mark tasks as completed when the button is pressed, and unmark them if they are already completed
-  function handleCompleteTask(id) {
-    setTasks(tasks.map(task => task.id === id ? { ...task, completed: !task.completed } : task))
+  async function handleCompleteTask(id) {
+    const task = tasks.find(t => t.id === id)
+    const newValue = !task.completed
+    const { error } = await supabase.from('tasks').update({ completed: newValue }).eq('id', id)
+    if (error) {
+      console.error(error.message)
+      return
+    }
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, completed: newValue } : t))
   }
 
   //Moves the task to the next day
-  function moveToTomorrow(id) {
-    setTasks(tasks.map(task => task.id === id ? { ...task, dueDate: new Date(new Date(task.dueDate).setDate(new Date(task.dueDate).getDate() + 1)) } : task))
+  async function moveToTomorrow(id) {
+    const task = tasks.find(t => t.id === id)
+    const newDate = new Date(task.dueDate)
+    newDate.setDate(newDate.getDate() + 1)
+    const { error } = await supabase.from('tasks').update({ due_date: newDate.toISOString() }).eq('id', id)
+    if (error) {
+      console.error(error.message)
+      return
+    }
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, dueDate: newDate.toISOString() } : t))
   }
 
   //Allows the user to edit the text of a task that has already been created
-  function handleEditTask(id) {
-    setTasks(tasks.map(task => task.id === id ? {...task, text: editedTask} : task))
+  async function handleEditTask(id) {
+    const { error } = await supabase.from('tasks').update({ text: editedTask }).eq('id', id)
+    if (error) {
+      console.error(error.message)
+      return
+    }
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, text: editedTask } : t))
   }
   //Checks for a streak of tasks being completed in a day
   function calculateStreak(tasks) {
@@ -66,7 +95,7 @@ function App() {
   let highest = 0
   let checkDate = new Date()  // start from today
 
-  for (let i = 0; i < 365; i++) { 
+  for (let i = 0; i < 365; i++) {
     const dayString = checkDate.toDateString()
     const tasksForDay = tasks.filter(task => new Date(task.dueDate).toDateString() === dayString)
 
@@ -76,9 +105,9 @@ function App() {
     if (!allCompleted){
       streak = 0  // Streak broken; resets to 0
     }else{
-      streak++ 
+      streak++
     }
-    
+
     if(streak > highest) {
       highest = streak
     }
@@ -173,13 +202,33 @@ function calculateTasksInADay(tasks) {
     return () => listener.subscription.unsubscribe()
   }, [])
 
+  //Loads the logged-in user's tasks from the database, and clears them when the user logs out
+  useEffect(() => {
+    if (!user) {
+      setTasks([])
+      return
+    }
+    async function loadTasks() {
+      const { data, error } = await supabase
+        .from('tasks')
+        .select('*')
+        .order('created_at', { ascending: true })
+      if (error) {
+        console.error(error.message)
+        return
+      }
+      setTasks(data.map(toTask))
+    }
+    loadTasks()
+  }, [user])
+
   //If the auth state is still loading, display a loading message. If the user is not logged in, display the login page. Otherwise, display the app.
   if (authLoading) return <p>Loading...</p>
   if (!user) return <Login />
 
   //Displays the app if logged in
   return(
-  
+
   <div className="app-wrapper">
     <nav>
       <NavLink
@@ -209,7 +258,7 @@ function calculateTasksInADay(tasks) {
           <input
             type = "text"
             value = {newTask}
-            onChange = {(e) => setNewTask(e.target.value)} 
+            onChange = {(e) => setNewTask(e.target.value)}
             onKeyDown = {(e) => {
               if (e.key === 'Enter') handleAddTask()
             }}
@@ -277,7 +326,7 @@ function calculateTasksInADay(tasks) {
           longestStreak={longestStreak}
           currentStreak={currentStreak}
           tasksInADay={tasksInADay}
-        />} 
+        />}
         />
       </Routes>
   </div>
