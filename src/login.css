@@ -89,3 +89,8 @@
   color: #d9ccff;
   text-align: center;
 }
+
+.login-message {
+  white-space: pre-line;   /* turns \n into real line breaks */
+  text-align: left;        /* a list reads better left-aligned than centered */
+}

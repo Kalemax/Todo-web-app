@@ -10,13 +10,26 @@ function Login() {
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
 
+
+
   async function handleSignUp() {
-    const { error } = await supabase.auth.signUp({ email, password })
-    if(password.length < 8 || !password.contains(/[A-Z]/) || !password.contains(/[a-z]/) || !password.contains(/[0-9]/)) {
-      setMessage("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.")
-    }else{
-      setMessage(error ? error.message : 'Check your email to confirm your account')
+    //Conditions for a valid password 
+    const longEnough = password.length >= 8
+    const hasUpper = /[A-Z]/.test(password)
+    const hasLower = /[a-z]/.test(password)
+    const hasNumber = /[0-9]/.test(password)
+    //Returns an error if password conditions are not met
+    if(!longEnough || !hasUpper || !hasLower || !hasNumber) {
+      setMessage("Password must contain:\n- At least 8 characters\n- At least one uppercase letter\n- At least one lowercase letter\n- At least one number")
+      return
     }
+    
+    const { error } = await supabase.auth.signUp({ email, password })
+    if (error) {
+      setMessage(error.message)
+      return
+    }
+    setMessage("Account created!")
   }
 
   async function handleLogIn(e) {
