@@ -196,7 +196,7 @@ function calculateTasksInADay(tasks) {
         Achievements
       </NavLink>
     </nav>
-    <button onClick={() => supabase.auth.signOut()}>Log Out</button>
+    <button className = "logout-button"onClick={() => supabase.auth.signOut()}>Log Out</button>
     <Routes>
       <Route path="/" element={
         <div className="task-page">
